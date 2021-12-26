@@ -33,7 +33,7 @@ namespace Lab4OS.WinApi
 		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern IntPtr OpenMutex(uint dwDesiredAccess, bool bInheritHandle, string lpName);
 
-		[DllImport("kernel32.dll", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+		[DllImport("kernel32.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		public static extern IntPtr CreateFile([MarshalAs(UnmanagedType.LPUTF8Str)] string fileName,
 									  uint desiredAccess, uint shareMode, SECURITY_ATTRIBUTES securityAttributes,
 									  uint creationDisposition, uint flagsAndAttributes, IntPtr templateFile);
@@ -60,7 +60,7 @@ namespace Lab4OS.WinApi
 		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
 
-		[DllImport("kernel32.dll", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
+		[DllImport("kernel32.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		public static extern bool CloseHandle(IntPtr hObject);
 
 		[DllImport("kernel32.dll", SetLastError = true)]

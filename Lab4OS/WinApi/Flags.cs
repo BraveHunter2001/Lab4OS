@@ -180,7 +180,6 @@ namespace Lab4OS
 			public const uint STD_OUTPUT_HANDLE = 4294967285;
 			public const uint INFINITE = 4294967295;
 			public const uint PIPE_UNLIMITED_INSTANCES = 255;
-			public const int N = 13;
 			public static readonly string mappingName = "mappinpls";
 		}
 	

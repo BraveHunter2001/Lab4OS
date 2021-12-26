@@ -10,7 +10,7 @@ namespace Reader
 {
     class Reader
     {
-        static string GetTime() => DateTime.Now.ToString("MM.dd HH:mm:ss:fff");
+        static string GetTime() => DateTime.Now.ToString("mm:ss:fff");
 
         unsafe static uint WriteLog(string str, IntPtr outHandle)
         {
@@ -22,7 +22,7 @@ namespace Reader
         static void Main(string[] args)
         {
             const int pageSize = 4096;
-            const int pageCount = 10;
+            const int pageCount = 15;
 
             IntPtr[] writeSem = new IntPtr[pageSize];
             IntPtr[] readSem = new IntPtr[pageSize];
@@ -57,24 +57,25 @@ namespace Reader
             }
 
             Funcs.VirtualLock(view, (UIntPtr)(pageSize * pageCount));
-
+         
             for (int i = 0; i < 3; i++)
             {
                 var page = Funcs.WaitForMultipleObjects(pageCount, readSem, false, Constants.INFINITE);
-                WriteLog($"TAKE | Semaphore |{GetTime()} " + "\n", stdOut);
+                
+                WriteLog($"TAKE|Semaphore|{GetTime()}" + "\n", stdOut);
 
                 Funcs.WaitForSingleObject(IOMutex, Constants.INFINITE);
-                WriteLog($"TAKE | Mutex | {GetTime()}" + "\n", stdOut);
+                WriteLog($"TAKE|Mutex|{GetTime()}" + "\n", stdOut);
 
                 Funcs.SleepEx((uint)new Random().Next(1000) + 500, false);
 
-                WriteLog($"Read | Page: {page.ToString()} | {GetTime()}" + "\n", stdOut);
+                WriteLog($"Read|Page: {page.ToString()}|{GetTime()}" + "\n", stdOut);
 
                 Funcs.ReleaseMutex(IOMutex);
-                WriteLog($"FREE | Mutex |  {GetTime()}" + "\n", stdOut);
+                WriteLog($"FREE|Mutex|{GetTime()}" + "\n", stdOut);
 
-                Funcs.ReleaseSemaphore(readSem[page], 1, out page);
-                WriteLog($"FREE | Semaphore | {GetTime()}" + "\n\n", stdOut);
+                Funcs.ReleaseSemaphore(writeSem[page], 1, out int foo);
+                WriteLog($"FREE|Semaphore|{GetTime()}" + "\n\n", stdOut);
 
             }
 
