@@ -19,7 +19,7 @@ namespace DrawerProcess
     public class LogProcess
     {
         private string Name { get; }
-        private List<LogProcTimes> Records { get; }
+        public List<LogProcTimes> Records { get;  set; }
 
         public LogProcess(string name, List<LogProcTimes> records)
         {
@@ -34,8 +34,8 @@ namespace DrawerProcess
         private readonly string path;
         private readonly int startTime;
         private readonly int countFiles;
-        private List<LogProcess> ReadProcesses { get; }
-        private List<LogProcess> WriteProcesses { get; }
+        public List<LogProcess> ReadProcesses { get; set; }
+        public List<LogProcess> WriteProcesses { get; set; } 
 
         private Parcer(string path, int countFiles)
         { 
@@ -45,6 +45,7 @@ namespace DrawerProcess
             ReadProcesses = GetLogs("Read", $@"{path}\readLogs\readLog");
             WriteProcesses = GetLogs("Write", $@"{path}\writeLogs\writeLog");
 
+         
         }
         public static Parcer GetInstance(string path, int countFiles)
         {
@@ -89,17 +90,17 @@ namespace DrawerProcess
                     {
                         if (temp[1].Equals("Semaphore"))
                         {
-                            log.takeSem = ParceTime(temp[2]) - startTime;
+                            log.takeSem = ParceTime(temp[2]);
                         }
                         if (temp[1].Equals("Mutex"))
                         {
-                            log.takeMut = ParceTime(temp[2]) - startTime;
+                            log.takeMut = ParceTime(temp[2]);
                         }
                     }
 
                     else if(temp[0].Equals("Read") || temp[0].Equals("WRITE"))
-                    { 
-                        log.work = ParceTime(temp[2]) - startTime;
+                    {
+                        log.work = ParceTime(temp[2]);
 
                     }
 
@@ -107,11 +108,11 @@ namespace DrawerProcess
                     {
                         if (temp[1].Equals("Semaphore"))
                         {
-                            log.freeSem = ParceTime(temp[2]) - startTime;
+                            log.freeSem = ParceTime(temp[2]);
                         }
                         if (temp[1].Equals("Mutex"))
                         {
-                            log.freeMut = ParceTime(temp[2]) - startTime;
+                            log.freeMut = ParceTime(temp[2]);
                         }
                     }
 
@@ -119,6 +120,20 @@ namespace DrawerProcess
 
                 if (m.Equals(""))
                 {
+                   
+
+                    //log.freeSem -= startTime;
+                    //log.freeMut -= startTime;
+                    //log.work -= startTime;
+                    //log.takeMut -= startTime;
+                    //log.takeSem -= startTime;
+
+                    log.freeSem -= log.freeMut;
+                    log.freeMut -= log.work;
+                    log.work -= log.takeMut;
+                    log.takeMut -= log.takeSem;
+                    log.takeSem -= startTime;
+
                     recordings.Add(log);
                     log = new LogProcTimes();
                 }
@@ -150,6 +165,12 @@ namespace DrawerProcess
 
             return res;
         }
+
+        private List<int> GetTimesList(LogProcTimes t)
+        {
+            return new List<int>() { t.takeSem, t.takeMut, t.work, t.freeMut, t.freeSem };
+        }
+        
 
         
 

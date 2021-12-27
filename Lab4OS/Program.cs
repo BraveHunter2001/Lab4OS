@@ -66,7 +66,7 @@ namespace Lab4OS
 			const int pageSize = 4096;
 			const int pageCount = 15;
 			const int fileSize = pageCount * pageSize;
-			const int processCount = 12;
+			const int processCount = 20;
 			const int hProcessCount = processCount / 2;
 
 			IntPtr[] writeSem = new IntPtr[pageSize];
